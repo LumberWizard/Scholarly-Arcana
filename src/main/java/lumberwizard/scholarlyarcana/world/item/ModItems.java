@@ -1,6 +1,8 @@
-package lumberwizard.scholarlyarcana.items;
+package lumberwizard.scholarlyarcana.world.item;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
+import lumberwizard.scholarlyarcana.world.block.ModBlocks;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -25,6 +27,12 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
     public static final RegistryObject<Item> EARTH_FLASK = ITEMS.register("earth_flask",
             () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
+
+    public static final RegistryObject<Item> ZINC_ORE_ITEM = ITEMS.register("zinc_ore",
+            () -> new BlockItem(ModBlocks.ZINC_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
+    public static final RegistryObject<Item> DEEPSLATE_ZINC_ORE_ITEM = ITEMS.register("deepslate_zinc_ore",
+            () -> new BlockItem(ModBlocks.DEEPSLATE_ZINC_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
+
 
     public static void registerItems() {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());

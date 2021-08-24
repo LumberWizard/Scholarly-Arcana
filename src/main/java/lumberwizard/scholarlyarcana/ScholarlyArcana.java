@@ -1,6 +1,8 @@
 package lumberwizard.scholarlyarcana;
 
-import lumberwizard.scholarlyarcana.items.ModItems;
+import lumberwizard.scholarlyarcana.data.worldgen.WorldGeneration;
+import lumberwizard.scholarlyarcana.world.block.ModBlocks;
+import lumberwizard.scholarlyarcana.world.item.ModItems;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -27,12 +29,14 @@ public class ScholarlyArcana {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(WorldGeneration.class);
 
+        ModBlocks.registerBlocks();
         ModItems.registerItems();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-
+        event.enqueueWork(WorldGeneration::registerFeatures);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
