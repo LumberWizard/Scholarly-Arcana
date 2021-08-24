@@ -1,5 +1,6 @@
 package lumberwizard.scholarlyarcana;
 
+import lumberwizard.scholarlyarcana.items.ModItems;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -14,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class ScholarlyArcana {
     public static final String MODID = "scholarlyarcana";
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public ScholarlyArcana() {
         // Register the setup method for modloading
@@ -26,6 +27,8 @@ public class ScholarlyArcana {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        ModItems.registerItems();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
