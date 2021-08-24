@@ -103,7 +103,7 @@ minecraft {
             args '--mod', "${modid}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                examplemod {
+                scholarlyarcana {
                     source sourceSets.main
                 }
             }
@@ -170,7 +170,7 @@ jar {
         attributes([
                 "Specification-Title"     : "${modid}",
                 "Specification-Vendor"    : "${mod_author}",
-                "Specification-Version"   : "${mod_version}", // We are version 1 of ourselves
+                "Specification-Version"   : "${mod_version}",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "${mod_author}",
