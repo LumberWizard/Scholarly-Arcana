@@ -21,9 +21,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-public class ItemEssenceExtractor extends Item {
+public class EssenceExtractorItem extends Item {
 
-    public ItemEssenceExtractor(Properties properties) {
+    public EssenceExtractorItem(Properties properties) {
         super(properties);
     }
 

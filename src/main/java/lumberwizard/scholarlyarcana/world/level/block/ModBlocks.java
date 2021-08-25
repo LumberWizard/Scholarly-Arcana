@@ -1,4 +1,4 @@
-package lumberwizard.scholarlyarcana.world.block;
+package lumberwizard.scholarlyarcana.world.level.block;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import net.minecraft.world.level.block.Block;

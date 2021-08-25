@@ -1,8 +1,10 @@
 package lumberwizard.scholarlyarcana;
 
 import lumberwizard.scholarlyarcana.data.worldgen.WorldGeneration;
-import lumberwizard.scholarlyarcana.world.block.ModBlocks;
+import lumberwizard.scholarlyarcana.world.entity.spell.ModEntityTypes;
+import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
 import lumberwizard.scholarlyarcana.world.item.ModItems;
+import lumberwizard.scholarlyarcana.world.spell.Spells;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -33,6 +35,8 @@ public class ScholarlyArcana {
 
         ModBlocks.registerBlocks();
         ModItems.registerItems();
+        ModEntityTypes.registerEntityTypes();
+        Spells.registerSpells();
     }
 
     private void setup(final FMLCommonSetupEvent event) {

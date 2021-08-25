@@ -1,7 +1,7 @@
 package lumberwizard.scholarlyarcana.world.item;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
-import lumberwizard.scholarlyarcana.world.block.ModBlocks;
+import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -16,7 +16,7 @@ public class ModItems {
             ScholarlyArcana.MODID);
 
     public static final RegistryObject<Item> ESSENCE_EXTRACTOR = ITEMS.register("essence_extractor",
-            () -> new ItemEssenceExtractor(new Item.Properties().durability(128).tab(CreativeModeTab.TAB_TOOLS)));
+            () -> new EssenceExtractorItem(new Item.Properties().durability(128).tab(CreativeModeTab.TAB_TOOLS)));
     public static final RegistryObject<Item> ESSENCE_FLASK = ITEMS.register("essence_flask",
             () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
     public static final RegistryObject<Item> FIRE_FLASK = ITEMS.register("fire_flask",
