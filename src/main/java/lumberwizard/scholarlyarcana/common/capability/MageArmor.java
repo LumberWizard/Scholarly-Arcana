@@ -1,11 +1,16 @@
 package lumberwizard.scholarlyarcana.common.capability;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-
 public class MageArmor implements IMageArmor {
 
-    private int level = 0;
+    private int level;
+
+    public MageArmor(int level) {
+        this.level = level;
+    }
+
+    public MageArmor() {
+        this(0);
+    }
 
     @Override
     public boolean setMageArmorLevel(int level) {
@@ -21,13 +26,4 @@ public class MageArmor implements IMageArmor {
         return level;
     }
 
-    @Override
-    public IntTag serialize() {
-        return IntTag.valueOf(level);
-    }
-
-    @Override
-    public void deserialize(IntTag tag) {
-        level = tag.getAsInt();
-    }
 }

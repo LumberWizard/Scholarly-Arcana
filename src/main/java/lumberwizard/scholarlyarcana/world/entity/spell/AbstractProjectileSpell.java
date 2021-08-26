@@ -1,6 +1,5 @@
 package lumberwizard.scholarlyarcana.world.entity.spell;
 
-import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.world.spell.Spell;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -11,16 +10,19 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
 
 public abstract class AbstractProjectileSpell extends Projectile implements SpellEntity {
 
-    private int life;
-    private double gravity = 0;
     protected ClipContext.Fluid hitFluids;
+    private int life;
+    private final double gravity = 0;
 
     protected AbstractProjectileSpell(EntityType<? extends AbstractProjectileSpell> type, Level level) {
         super(type, level);
@@ -51,8 +53,8 @@ public abstract class AbstractProjectileSpell extends Projectile implements Spel
         Vec3 deltaMovement = this.getDeltaMovement();
         if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
             double d0 = deltaMovement.horizontalDistance();
-            this.setYRot((float)(Mth.atan2(deltaMovement.x, deltaMovement.z) * (double)(180F / (float)Math.PI)));
-            this.setXRot((float)(Mth.atan2(deltaMovement.y, d0) * (double)(180F / (float)Math.PI)));
+            this.setYRot((float) (Mth.atan2(deltaMovement.x, deltaMovement.z) * (double) (180F / (float) Math.PI)));
+            this.setXRot((float) (Mth.atan2(deltaMovement.y, d0) * (double) (180F / (float) Math.PI)));
             this.yRotO = this.getYRot();
             this.xRotO = this.getXRot();
         }

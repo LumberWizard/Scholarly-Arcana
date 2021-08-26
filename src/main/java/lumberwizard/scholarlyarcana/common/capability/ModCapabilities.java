@@ -13,7 +13,7 @@ public class ModCapabilities {
     @CapabilityInject(ISpellCostModifier.class)
     public static final Capability<ISpellCostModifier> SPELL_COST_MODIFIER = null;
 
-    @CapabilityInject((IMageArmor.class))
+    @CapabilityInject(IMageArmor.class)
     public static final Capability<IMageArmor> MAGE_ARMOR = null;
 
     @SubscribeEvent

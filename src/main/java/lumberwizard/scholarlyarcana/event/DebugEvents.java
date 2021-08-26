@@ -1,13 +1,11 @@
 package lumberwizard.scholarlyarcana.event;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
-import lumberwizard.scholarlyarcana.common.capability.ModCapabilities;
-import lumberwizard.scholarlyarcana.common.capability.SpellCostModifier;
-import lumberwizard.scholarlyarcana.common.capability.SimpleCapabilityProvider;
+import lumberwizard.scholarlyarcana.common.capability.MageEquipmentProvider;
+import lumberwizard.scholarlyarcana.util.MageEquipmentHelper;
 import lumberwizard.scholarlyarcana.world.entity.spell.FireboltEntity;
 import lumberwizard.scholarlyarcana.world.entity.spell.ModEntityTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,7 +24,7 @@ public class DebugEvents {
         Level level = event.getWorld();
         ItemStack item = event.getItemStack();
         if (item.getItem() == Items.BLAZE_POWDER) {
-            if (player.getItemBySlot(EquipmentSlot.HEAD).getCapability(ModCapabilities.SPELL_COST_MODIFIER, null).orElse(new SpellCostModifier(0)).getModifierComponent() < 0.5) {
+            if (MageEquipmentHelper.getSpellCostModifier(player) < 0.5) {
                 item.shrink(1);
             }
             if (item.getCount() == 0) {
@@ -45,7 +43,8 @@ public class DebugEvents {
     public static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack item = event.getObject();
         if (item.getItem() == Items.GOLDEN_HELMET) {
-            SimpleCapabilityProvider provider = new SimpleCapabilityProvider(new SpellCostModifier(1));
+            MageEquipmentProvider provider = new MageEquipmentProvider();
+            provider.setSpellCostModifier(0.4);
             event.addCapability(new ResourceLocation(ScholarlyArcana.MODID, "cost_reudction"), provider);
             event.addListener(provider::invalidate);
         }

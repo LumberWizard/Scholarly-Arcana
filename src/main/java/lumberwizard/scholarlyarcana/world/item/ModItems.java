@@ -2,6 +2,7 @@ package lumberwizard.scholarlyarcana.world.item;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -27,6 +28,15 @@ public class ModItems {
             () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
     public static final RegistryObject<Item> EARTH_FLASK = ITEMS.register("earth_flask",
             () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
+    public static final RegistryObject<Item> ROBES_HELMET = ITEMS.register("magical_hat",
+            () -> new RobesItem(ModArmorMaterials.ARCANE_THREAD, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT), 0.05));
+    public static final RegistryObject<Item> ROBES_CHESTPLATE = ITEMS.register("arcane_robes",
+            () -> new RobesItem(ModArmorMaterials.ARCANE_THREAD, EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT), 0.05));
+    public static final RegistryObject<Item> ROBES_LEGGINGS = ITEMS.register("mage_trousers",
+            () -> new RobesItem(ModArmorMaterials.ARCANE_THREAD, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT), 0.05));
+    public static final RegistryObject<Item> ROBES_BOOTS = ITEMS.register("mage_shoes",
+            () -> new RobesItem(ModArmorMaterials.ARCANE_THREAD, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT), 0.05));
+
 
     public static final RegistryObject<Item> ZINC_ORE_ITEM = ITEMS.register("zinc_ore",
             () -> new BlockItem(ModBlocks.ZINC_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));

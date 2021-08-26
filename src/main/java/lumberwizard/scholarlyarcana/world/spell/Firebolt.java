@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 
 public class Firebolt extends Spell {
 
-    public Firebolt(){
+    public Firebolt() {
         super(TargetType.ENTITY);
     }
 
