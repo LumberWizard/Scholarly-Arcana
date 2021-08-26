@@ -1,5 +1,7 @@
 package lumberwizard.scholarlyarcana.common.capability;
 
+import java.util.List;
+
 public class SpellCostModifier implements ISpellCostModifier {
 
     private double modifierComponent;
@@ -12,4 +14,5 @@ public class SpellCostModifier implements ISpellCostModifier {
     public double getModifierComponent() {
         return modifierComponent;
     }
+
 }

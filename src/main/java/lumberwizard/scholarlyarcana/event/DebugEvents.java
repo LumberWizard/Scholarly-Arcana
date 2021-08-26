@@ -1,9 +1,9 @@
 package lumberwizard.scholarlyarcana.event;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
-import lumberwizard.scholarlyarcana.common.capability.Capabilities;
+import lumberwizard.scholarlyarcana.common.capability.ModCapabilities;
 import lumberwizard.scholarlyarcana.common.capability.SpellCostModifier;
-import lumberwizard.scholarlyarcana.common.capability.SpellCostModifierProvider;
+import lumberwizard.scholarlyarcana.common.capability.SimpleCapabilityProvider;
 import lumberwizard.scholarlyarcana.world.entity.spell.FireboltEntity;
 import lumberwizard.scholarlyarcana.world.entity.spell.ModEntityTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +26,7 @@ public class DebugEvents {
         Level level = event.getWorld();
         ItemStack item = event.getItemStack();
         if (item.getItem() == Items.BLAZE_POWDER) {
-            if (player.getItemBySlot(EquipmentSlot.HEAD).getCapability(Capabilities.SPELL_COST_MODIFIER, null).orElse(new SpellCostModifier(0)).getModifierComponent() < 0.5) {
+            if (player.getItemBySlot(EquipmentSlot.HEAD).getCapability(ModCapabilities.SPELL_COST_MODIFIER, null).orElse(new SpellCostModifier(0)).getModifierComponent() < 0.5) {
                 item.shrink(1);
             }
             if (item.getCount() == 0) {
@@ -46,7 +45,7 @@ public class DebugEvents {
     public static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack item = event.getObject();
         if (item.getItem() == Items.GOLDEN_HELMET) {
-            SpellCostModifierProvider provider = new SpellCostModifierProvider(1);
+            SimpleCapabilityProvider provider = new SimpleCapabilityProvider(new SpellCostModifier(1));
             event.addCapability(new ResourceLocation(ScholarlyArcana.MODID, "cost_reudction"), provider);
             event.addListener(provider::invalidate);
         }
