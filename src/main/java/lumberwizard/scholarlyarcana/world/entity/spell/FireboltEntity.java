@@ -5,6 +5,7 @@ import lumberwizard.scholarlyarcana.world.spell.Spell;
 import lumberwizard.scholarlyarcana.world.spell.Spells;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +14,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class FireboltEntity extends AbstractProjectileSpell {
+
+    public static DamageSource firebolt(FireboltEntity bolt, Entity caster) {
+        return new IndirectEntityDamageSource("firebolt", bolt, caster != null ? caster : bolt).setIsFire().setMagic().setProjectile();
+    }
 
     private float baseDamage = 3.0F;
 
@@ -44,14 +49,9 @@ public class FireboltEntity extends AbstractProjectileSpell {
         Entity hit = hitResult.getEntity();
         Entity caster = this.getOwner();
         DamageSource damageSource;
-        if (caster == null) {
-            damageSource = DamageSource.indirectMagic(this, this);
-        }
-        else {
-            damageSource = DamageSource.indirectMagic(this, caster);
-            if (caster instanceof LivingEntity) {
-                ((LivingEntity) caster).setLastHurtMob(hit);
-            }
+        damageSource = firebolt(this, caster);
+        if (caster instanceof LivingEntity) {
+            ((LivingEntity) caster).setLastHurtMob(hit);
         }
         hit.hurt(damageSource, baseDamage);
         this.discard();

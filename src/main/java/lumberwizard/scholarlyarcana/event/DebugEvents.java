@@ -1,15 +1,19 @@
 package lumberwizard.scholarlyarcana.event;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
+import lumberwizard.scholarlyarcana.common.capability.Capabilities;
+import lumberwizard.scholarlyarcana.common.capability.SpellCostModifier;
+import lumberwizard.scholarlyarcana.common.capability.SpellCostModifierProvider;
 import lumberwizard.scholarlyarcana.world.entity.spell.FireboltEntity;
 import lumberwizard.scholarlyarcana.world.entity.spell.ModEntityTypes;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,7 +27,9 @@ public class DebugEvents {
         Level level = event.getWorld();
         ItemStack item = event.getItemStack();
         if (item.getItem() == Items.BLAZE_POWDER) {
-            item.shrink(1);
+            if (player.getItemBySlot(EquipmentSlot.HEAD).getCapability(Capabilities.SPELL_COST_MODIFIER, null).orElse(new SpellCostModifier(0)).getModifierComponent() < 0.5) {
+                item.shrink(1);
+            }
             if (item.getCount() == 0) {
                 player.getInventory().removeItem(item);
             }
@@ -32,6 +38,17 @@ public class DebugEvents {
                 firebolt.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 4.0F, 0.5F);
                 level.addFreshEntity(firebolt);
             }
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAttachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+        ItemStack item = event.getObject();
+        if (item.getItem() == Items.GOLDEN_HELMET) {
+            SpellCostModifierProvider provider = new SpellCostModifierProvider(1);
+            event.addCapability(new ResourceLocation(ScholarlyArcana.MODID, "cost_reudction"), provider);
+            event.addListener(provider::invalidate);
         }
     }
 
