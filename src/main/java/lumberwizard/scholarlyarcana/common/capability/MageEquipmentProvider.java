@@ -16,8 +16,9 @@ public class MageEquipmentProvider implements ICapabilitySerializable<CompoundTa
     private IMageArmor mageArmor;
     private final LazyOptional<IMageArmor> mageArmorOptional = LazyOptional.of(() -> mageArmor);
 
-    public MageEquipmentProvider() {
-
+    public MageEquipmentProvider(double spellCostModifier) {
+        this.spellCostModifier = new SpellCostModifier(spellCostModifier);
+        mageArmor = new MageArmor();
     }
 
     @Nonnull
@@ -30,14 +31,6 @@ public class MageEquipmentProvider implements ICapabilitySerializable<CompoundTa
             return modifierOptional.cast();
         }
         return LazyOptional.empty();
-    }
-
-    public void setSpellCostModifier(double modifier) {
-        spellCostModifier = new SpellCostModifier(modifier);
-    }
-
-    public void initializeMageArmor() {
-        mageArmor = new MageArmor();
     }
 
     @Override

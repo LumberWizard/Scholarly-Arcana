@@ -2,7 +2,7 @@ package lumberwizard.scholarlyarcana.client;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.client.render.entity.FireboltRenderer;
-import lumberwizard.scholarlyarcana.world.entity.spell.ModEntityTypes;
+import lumberwizard.scholarlyarcana.world.entity.ModEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

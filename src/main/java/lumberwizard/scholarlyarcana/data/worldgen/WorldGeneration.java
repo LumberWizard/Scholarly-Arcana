@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class WorldGeneration {
 
-    public static final ImmutableList<OreConfiguration.TargetBlockState> ORE_ZINC_TARGET_LIST = ImmutableList.of(OreConfiguration.target(OreConfiguration.Predicates.STONE_ORE_REPLACEABLES, ModBlocks.ZINC_ORE.get().defaultBlockState()), OreConfiguration.target(OreConfiguration.Predicates.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.DEEPSLATE_ZINC_ORE.get().defaultBlockState()));
+    private static final ImmutableList<OreConfiguration.TargetBlockState> ORE_ZINC_TARGET_LIST = ImmutableList.of(OreConfiguration.target(OreConfiguration.Predicates.STONE_ORE_REPLACEABLES, ModBlocks.ZINC_ORE.get().defaultBlockState()), OreConfiguration.target(OreConfiguration.Predicates.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.DEEPSLATE_ZINC_ORE.get().defaultBlockState()));
     private static final Set<Biome.BiomeCategory> OVERWORLD_BIOME_CATEGORIES = ImmutableSet.of(Biome.BiomeCategory.JUNGLE, Biome.BiomeCategory.BEACH, Biome.BiomeCategory.DESERT, Biome.BiomeCategory.FOREST, Biome.BiomeCategory.EXTREME_HILLS, Biome.BiomeCategory.ICY, Biome.BiomeCategory.MESA, Biome.BiomeCategory.MUSHROOM, Biome.BiomeCategory.OCEAN, Biome.BiomeCategory.PLAINS, Biome.BiomeCategory.RIVER, Biome.BiomeCategory.SAVANNA, Biome.BiomeCategory.SWAMP, Biome.BiomeCategory.TAIGA, Biome.BiomeCategory.UNDERGROUND);
     private static ConfiguredFeature zincOre;
 

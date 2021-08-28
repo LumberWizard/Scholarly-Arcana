@@ -47,9 +47,7 @@ public class RobesItem extends ArmorItem {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        MageEquipmentProvider provider = new MageEquipmentProvider();
-        provider.setSpellCostModifier(0.05);
-        provider.initializeMageArmor();
+        MageEquipmentProvider provider = new MageEquipmentProvider(0.05);
         return provider;
     }
 

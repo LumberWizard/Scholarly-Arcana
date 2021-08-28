@@ -20,9 +20,9 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractProjectileSpell extends Projectile implements SpellEntity {
 
+    private final double gravity = 0;
     protected ClipContext.Fluid hitFluids;
     private int life;
-    private final double gravity = 0;
 
     protected AbstractProjectileSpell(EntityType<? extends AbstractProjectileSpell> type, Level level) {
         super(type, level);
