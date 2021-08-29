@@ -2,6 +2,7 @@ package lumberwizard.scholarlyarcana;
 
 import lumberwizard.scholarlyarcana.data.worldgen.WorldGeneration;
 import lumberwizard.scholarlyarcana.world.entity.ModEntityTypes;
+import lumberwizard.scholarlyarcana.world.entity.ai.attributes.ModAttributes;
 import lumberwizard.scholarlyarcana.world.item.ModItems;
 import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
 import lumberwizard.scholarlyarcana.world.level.block.entity.ModBlockEntitiyTypes;
@@ -41,6 +42,7 @@ public class ScholarlyArcana {
         ModBlockEntitiyTypes.registerBlockEntityTypes();
         ModEntityTypes.registerEntityTypes();
         Spells.registerSpells();
+        ModAttributes.registerAtrributes();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
