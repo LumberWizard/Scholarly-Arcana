@@ -33,10 +33,13 @@ public class EssenceLiquidBlock extends Block {
 
 
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
-    protected final FlowingFluid fluid;
-    private final List<FluidState> stateCache;
     public static final VoxelShape STABLE_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
     public static final ImmutableList<Direction> POSSIBLE_FLOW_DIRECTIONS = ImmutableList.of(Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST);
+    protected final FlowingFluid fluid;
+    private final List<FluidState> stateCache;
+    // Forge start
+    private final java.util.function.Supplier<? extends net.minecraft.world.level.material.Fluid> supplier;
+    private boolean fluidStateCacheInitialized = false;
 
     public EssenceLiquidBlock(Supplier<? extends FlowingFluid> fluidSupplier, Properties properties) {
         super(properties);
@@ -120,14 +123,9 @@ public class EssenceLiquidBlock extends Block {
         builder.add(LEVEL);
     }
 
-    // Forge start
-    private final java.util.function.Supplier<? extends net.minecraft.world.level.material.Fluid> supplier;
-
     public FlowingFluid getFluid() {
         return (FlowingFluid) supplier.get();
     }
-
-    private boolean fluidStateCacheInitialized = false;
 
     protected synchronized void initFluidStateCache() {
         if (fluidStateCacheInitialized == false) {

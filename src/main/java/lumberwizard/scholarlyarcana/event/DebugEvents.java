@@ -5,7 +5,6 @@ import lumberwizard.scholarlyarcana.world.entity.ModEntityTypes;
 import lumberwizard.scholarlyarcana.world.entity.ai.attributes.ModAttributes;
 import lumberwizard.scholarlyarcana.world.entity.spell.FireboltEntity;
 import lumberwizard.scholarlyarcana.world.item.ModItems;
-import lumberwizard.scholarlyarcana.world.item.RobesItem;
 import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -29,8 +28,7 @@ public class DebugEvents {
         ItemStack item = event.getItemStack();
         if (item.getItem() == Items.BLAZE_POWDER) {
             if (!level.isClientSide()) {
-                if (player.getAttribute(ModAttributes.SPELL_COST_MODIFIER.get()).getValue() < 0.5)
-                {
+                if (player.getAttribute(ModAttributes.SPELL_COST_MODIFIER.get()).getValue() < 0.5) {
                     item.shrink(1);
                     if (item.getCount() == 0) {
                         player.getInventory().removeItem(item);

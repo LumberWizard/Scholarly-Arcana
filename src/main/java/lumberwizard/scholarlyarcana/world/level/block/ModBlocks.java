@@ -2,7 +2,9 @@ package lumberwizard.scholarlyarcana.world.level.block;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.world.level.material.ModFluids;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;

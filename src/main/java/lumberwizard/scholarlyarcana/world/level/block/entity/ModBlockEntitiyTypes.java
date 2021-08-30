@@ -14,9 +14,10 @@ public class ModBlockEntitiyTypes {
 
     public static void registerBlockEntityTypes() {
         BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }    public static final RegistryObject<BlockEntityType<EssenceTankBlockEntity>> ESSENCE_TANK_ENTITY = BLOCK_ENTITIES.register("essence_tank",
-            () -> BlockEntityType.Builder.of(EssenceTankBlockEntity::new, ModBlocks.ESSENCE_TANK.get()).build(null));
+    }
 
+    public static final RegistryObject<BlockEntityType<EssenceTankBlockEntity>> ESSENCE_TANK_ENTITY = BLOCK_ENTITIES.register("essence_tank",
+            () -> BlockEntityType.Builder.of(EssenceTankBlockEntity::new, ModBlocks.ESSENCE_TANK.get()).build(null));
 
 
 }
