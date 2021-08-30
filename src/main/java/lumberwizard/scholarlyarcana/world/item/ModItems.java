@@ -42,6 +42,8 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.ZINC_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
     public static final RegistryObject<Item> DEEPSLATE_ZINC_ORE_ITEM = ITEMS.register("deepslate_zinc_ore",
             () -> new BlockItem(ModBlocks.DEEPSLATE_ZINC_ORE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
+    public static final RegistryObject<Item> ESSENCE_TANK_ITEM = ITEMS.register("essence_tank",
+            () -> new BlockItem(ModBlocks.ESSENCE_TANK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
 
 
     public static void registerItems() {

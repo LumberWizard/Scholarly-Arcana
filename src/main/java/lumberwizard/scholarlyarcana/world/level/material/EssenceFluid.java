@@ -24,7 +24,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -140,6 +142,15 @@ public abstract class EssenceFluid extends FlowingFluid {
 
         protected FluidAttributes.Builder getAttributeBuilder() {
             return attributeBuilder;
+        }
+
+        public Supplier<? extends Fluid> getSource() {
+            return source;
+        }
+
+        @Override
+        public String toString() {
+            return StringUtils.capitalize(this.name().toLowerCase(Locale.ROOT));
         }
     }
 
