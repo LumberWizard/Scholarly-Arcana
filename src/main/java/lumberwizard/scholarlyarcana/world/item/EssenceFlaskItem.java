@@ -79,6 +79,7 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
                             });
                             level.gameEvent(player, GameEvent.FLUID_PICKUP, clickedPos);
                             ItemStack filledResultStack = ItemUtils.createFilledResult(stack, player, filled);
+                            //TODO: implement?
 //                            if (!level.isClientSide()) {
 //                                CriteriaTriggers.FILLED_BUCKET.trigger((ServerPlayer)player, filled);
 //                            }
@@ -113,25 +114,34 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity != null && blockEntity.getType() == ModBlockEntitiyTypes.ESSENCE_TANK_ENTITY.get()) {
+        if (blockEntity != null) {
             Direction side = context.getClickedFace();
             ItemStack stack = context.getItemInHand();
+            Player player = context.getPlayer();
+            InteractionHand hand = context.getHand();
             IFluidHandlerItem flask = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElseThrow(() -> new IllegalStateException("Essence Flask does not have fluid handler capability"));
             IFluidHandler tank = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).orElseThrow(() -> new IllegalStateException("Essence Tank does not have fluid handler capability on side " + side));
+            IFluidHandler source = null, target = null;
             if (this.contentFluid.get() == Fluids.EMPTY && side.getAxis().isHorizontal()) {
                 ScholarlyArcana.LOGGER.info("Attenpting to empty tank");
-                if (flask.fill(tank.drain(flask.fill(tank.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE) == 0) {
-                    return InteractionResult.FAIL;
-                }
-                return InteractionResult.SUCCESS;
+                source = tank;
+                target = flask;
             }
             else if (this.contentFluid.get() != Fluids.EMPTY && side.getAxis().isVertical()) {
                 ScholarlyArcana.LOGGER.info("Attempting to fill tank");
-                if (tank.fill(flask.drain(tank.fill(flask.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE) == 0) {
+                source = flask;
+                target = tank;
+            }
+            if (source != null && target != null) {
+                int fill = target.fill(source.drain(target.fill(source.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                ItemStack filled = flask.getContainer();
+                if (fill == 0 || filled.isEmpty()) {
                     return InteractionResult.FAIL;
                 }
-                return InteractionResult.CONSUME;
+                player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, filled));
+                return InteractionResult.SUCCESS;
             }
+            else return InteractionResult.FAIL;
         }
         return InteractionResult.PASS;
     }
@@ -266,11 +276,9 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
             if (container.getCount() != 1 || resource.getAmount() < FluidAttributes.BUCKET_VOLUME || !getFluid().isEmpty() || !canFillFluidType(resource)) {
                 return 0;
             }
-
             if (action.execute()) {
                 setFluid(resource);
             }
-
             return FluidAttributes.BUCKET_VOLUME;
         }
 
@@ -280,7 +288,6 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
             if (container.getCount() != 1 || resource.getAmount() < FluidAttributes.BUCKET_VOLUME) {
                 return FluidStack.EMPTY;
             }
-
             FluidStack fluidStack = getFluid();
             if (!fluidStack.isEmpty() && fluidStack.isFluidEqual(resource)) {
                 if (action.execute()) {

@@ -14,6 +14,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.UUID;
@@ -47,6 +49,9 @@ public class DebugEvents {
             player.getAttribute(ModAttributes.SPELL_COST_MODIFIER.get()).getModifiers().forEach(modifier -> {
                 ScholarlyArcana.LOGGER.info(modifier.getId() + " " + modifier.getAmount());
             });
+        }
+        if (item.getItem() == Items.WATER_BUCKET) {
+            item.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(cap -> ScholarlyArcana.LOGGER.info(cap.drain(1000, IFluidHandler.FluidAction.EXECUTE).getAmount()));
         }
     }
 
