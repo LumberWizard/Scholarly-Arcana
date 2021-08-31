@@ -2,10 +2,12 @@ package lumberwizard.scholarlyarcana.world.item;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
+import lumberwizard.scholarlyarcana.world.level.material.ModFluids;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,15 +21,15 @@ public class ModItems {
     public static final RegistryObject<Item> ESSENCE_EXTRACTOR = ITEMS.register("essence_extractor",
             () -> new EssenceExtractorItem(new Item.Properties().durability(128).tab(CreativeModeTab.TAB_TOOLS)));
     public static final RegistryObject<Item> ESSENCE_FLASK = ITEMS.register("essence_flask",
-            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
+            () -> new EssenceFlaskItem(Fluids.EMPTY.delegate, new Item.Properties().tab(CreativeModeTab.TAB_BREWING)));
     public static final RegistryObject<Item> FIRE_FLASK = ITEMS.register("fire_flask",
-            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
+            () -> new EssenceFlaskItem(ModFluids.FIRE_ESSENCE, new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
     public static final RegistryObject<Item> WATER_FLASK = ITEMS.register("water_flask",
-            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
+            () -> new EssenceFlaskItem(ModFluids.WATER_ESSENCE, new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
     public static final RegistryObject<Item> AIR_FLASK = ITEMS.register("air_flask",
-            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
+            () -> new EssenceFlaskItem(ModFluids.AIR_ESSENCE, new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
     public static final RegistryObject<Item> EARTH_FLASK = ITEMS.register("earth_flask",
-            () -> new Item(new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
+            () -> new EssenceFlaskItem(ModFluids.EARTH_ESSENCE, new Item.Properties().tab(CreativeModeTab.TAB_BREWING).craftRemainder(ESSENCE_FLASK.get())));
     public static final RegistryObject<Item> ROBES_HELMET = ITEMS.register("magical_hat",
             () -> new RobesItem(ModArmorMaterials.ARCANE_THREAD, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT), 0.05));
     public static final RegistryObject<Item> ROBES_CHESTPLATE = ITEMS.register("arcane_robes",

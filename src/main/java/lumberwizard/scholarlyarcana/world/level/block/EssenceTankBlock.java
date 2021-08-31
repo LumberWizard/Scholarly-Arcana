@@ -33,7 +33,7 @@ public class EssenceTankBlock extends HorizontalDirectionalBlock implements Enti
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide()) {
-            return TickingEntityBlockHelper.createTickerHelper(type, ModBlockEntitiyTypes.ESSENCE_TANK_ENTITY.get(), EssenceTankBlockEntity::serverTick);
+            return TickingEntityBlockHelper.createTickerHelper(type, ModBlockEntitiyTypes.ESSENCE_TANK_ENTITY.get(), EssenceTankBlockEntity.ticker);
         }
         return null;
     }

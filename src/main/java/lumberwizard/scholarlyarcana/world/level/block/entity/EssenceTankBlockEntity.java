@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,27 +19,42 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class EssenceTankBlockEntity extends BlockEntity {
 
     private final EssenceTankHandler tankHandler = new EssenceTankHandler(this::setChanged);
     private final LazyOptional<IFluidHandler> tankHandlerOptional = LazyOptional.of(() -> tankHandler);
+    private final Map<Direction, IFluidHandler> adjacentFluidHandlers = new HashMap<>();
+    private final Map<Direction, EssenceTankHandler.InternalEssenceTank> internalTanks = new HashMap<>();
+    private final Map<Direction, LazyOptional<? extends IFluidHandler>> internalTankCaps = new HashMap<>();
 
     public EssenceTankBlockEntity(BlockPos position, BlockState state) {
         super(ModBlockEntitiyTypes.ESSENCE_TANK_ENTITY.get(), position, state);
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            int index = subtractHorizontal(side, getBlockState().getValue(HorizontalDirectionalBlock.FACING));
+            internalTanks.put(side, tankHandler.tanks[index]);
+            internalTankCaps.put(side, tankHandler.getTank(index));
+        }
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, EssenceTankBlockEntity essenceTank) {
+    public static BlockEntityTicker<EssenceTankBlockEntity> ticker = (level, pos, state, blockEntity) -> blockEntity.serverTick(level, pos);
+
+    private void serverTick(Level level, BlockPos pos) {
         for (Direction side : Direction.Plane.HORIZONTAL) {
-            essenceTank.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(tank -> {
-                BlockEntity adjacentBlockEntity = level.getBlockEntity(pos.relative(side));
-                if (adjacentBlockEntity != null) {
-                    adjacentBlockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(adjacentTank ->
-                            adjacentTank.fill(tank.drain(adjacentTank.fill(tank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE));
-                }
-            });
+            if (level.getBlockEntity(pos) != null) {
+                LazyOptional<IFluidHandler> adjacentCapOptional = level.getBlockEntity(pos).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite());
+                adjacentCapOptional.ifPresent(cap -> adjacentFluidHandlers.put(side, cap));
+                adjacentCapOptional.addListener(cap -> adjacentFluidHandlers.remove(side));
+            }
+            if (adjacentFluidHandlers.containsKey(side)) {
+                EssenceTankHandler.InternalEssenceTank tank = internalTanks.get(side);
+                IFluidHandler adjacentTank = adjacentFluidHandlers.get(side);
+                adjacentTank.fill(tank.drain(adjacentTank.fill(tank.drain(1000, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+            }
         }
     }
 
@@ -54,7 +70,7 @@ public class EssenceTankBlockEntity extends BlockEntity {
             if (side == null || side.getAxis().isVertical()) {
                 return tankHandlerOptional.cast();
             } else {
-                return tankHandler.getTank(subtractHorizontal(side, getBlockState().getValue(HorizontalDirectionalBlock.FACING))).cast();
+                return internalTankCaps.get(side).cast();
             }
         }
         return super.getCapability(cap, side);

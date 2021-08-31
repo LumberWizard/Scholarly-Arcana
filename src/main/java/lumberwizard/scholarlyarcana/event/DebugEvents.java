@@ -50,13 +50,4 @@ public class DebugEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onItemUseOnBlock(PlayerInteractEvent.RightClickBlock event) {
-        Level level = event.getWorld();
-        ItemStack item = event.getItemStack();
-        if (item.getItem() == ModItems.FIRE_FLASK.get() && !level.isClientSide()) {
-            level.setBlock(event.getPos(), ModBlocks.FIRE_ESSENCE.get().defaultBlockState(), 11);
-        }
-    }
-
 }

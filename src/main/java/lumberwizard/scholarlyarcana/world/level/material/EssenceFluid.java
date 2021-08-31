@@ -2,6 +2,7 @@ package lumberwizard.scholarlyarcana.world.level.material;
 
 import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.util.MiscUtils;
+import lumberwizard.scholarlyarcana.world.item.ModItems;
 import lumberwizard.scholarlyarcana.world.level.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -74,6 +75,10 @@ public abstract class EssenceFluid extends FlowingFluid {
         return Items.AIR;
     }
 
+    public Item getFlask() {
+        return essenceType.flask.get();
+    }
+
     @Override
     protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction side) {
         return true;
@@ -111,27 +116,30 @@ public abstract class EssenceFluid extends FlowingFluid {
 
     public enum EssenceType {
         FIRE(createBasicAttributesBuilder().color(0xFFF26F18).luminosity(8).temperature(1000).translationKey(MiscUtils.createTranslationKey("block", "fire_essence")),
-                ModFluids.FIRE_ESSENCE, ModFluids.FLOWING_FIRE_ESSENCE, ModBlocks.FIRE_ESSENCE),
+                ModFluids.FIRE_ESSENCE, ModFluids.FLOWING_FIRE_ESSENCE, ModBlocks.FIRE_ESSENCE, ModItems.FIRE_FLASK),
         AIR(createBasicAttributesBuilder().color(0xD8D9F5FF).translationKey(MiscUtils.createTranslationKey("block", "air_essence")),
-                ModFluids.AIR_ESSENCE, ModFluids.FLOWING_AIR_ESSENCE, ModBlocks.AIR_ESSENCE),
+                ModFluids.AIR_ESSENCE, ModFluids.FLOWING_AIR_ESSENCE, ModBlocks.AIR_ESSENCE, ModItems.AIR_FLASK),
         WATER(createBasicAttributesBuilder().color(0xFF4C73CF).translationKey(MiscUtils.createTranslationKey("block", "water_essence")),
-                ModFluids.WATER_ESSENCE, ModFluids.FLOWING_WATER_ESSENCE, ModBlocks.WATER_ESSENCE),
+                ModFluids.WATER_ESSENCE, ModFluids.FLOWING_WATER_ESSENCE, ModBlocks.WATER_ESSENCE, ModItems.WATER_FLASK),
         EARTH(createBasicAttributesBuilder().color(0xFF704F38).translationKey(MiscUtils.createTranslationKey("block", "earth_essence")),
-                ModFluids.EARTH_ESSENCE, ModFluids.FLOWING_EARTH_ESSENCE, ModBlocks.EARTH_ESSENCE);
+                ModFluids.EARTH_ESSENCE, ModFluids.FLOWING_EARTH_ESSENCE, ModBlocks.EARTH_ESSENCE, ModItems.EARTH_FLASK);
 
         protected final Supplier<? extends FlowingFluid> source;
         protected final Supplier<? extends FlowingFluid> flowing;
         protected final Supplier<? extends Block> legacyBlock;
+        protected final Supplier<? extends Item> flask;
         private final FluidAttributes.Builder attributeBuilder;
 
-        EssenceType(FluidAttributes.Builder attributeBuilder, Supplier<? extends FlowingFluid> source, Supplier<? extends FlowingFluid> flowing, Supplier<? extends Block> legacyBlock) {
+        EssenceType(FluidAttributes.Builder attributeBuilder, Supplier<? extends FlowingFluid> source, Supplier<? extends FlowingFluid> flowing, Supplier<? extends Block> legacyBlock, Supplier<? extends Item> flask) {
             this.attributeBuilder = attributeBuilder;
             this.source = source;
             this.flowing = flowing;
             this.legacyBlock = legacyBlock;
+            this.flask = flask;
         }
 
         private static FluidAttributes.Builder createBasicAttributesBuilder() {
+            //TODO: add sound?
             return FluidAttributes.builder(new ResourceLocation(ScholarlyArcana.MODID, "block/essence_still"), new ResourceLocation(ScholarlyArcana.MODID, "block/essence_flowing"))
                     .overlay(new ResourceLocation(ScholarlyArcana.MODID, "block/essence_overlay"))
                     .density(-1).gaseous().rarity(Rarity.UNCOMMON).viscosity(100)

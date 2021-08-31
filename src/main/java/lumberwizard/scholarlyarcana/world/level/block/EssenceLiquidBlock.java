@@ -2,15 +2,19 @@ package lumberwizard.scholarlyarcana.world.level.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import lumberwizard.scholarlyarcana.world.level.material.EssenceFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -26,16 +30,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
 
-public class EssenceLiquidBlock extends Block {
+public class EssenceLiquidBlock extends Block implements FlaskPickup {
 
 
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
     public static final VoxelShape STABLE_SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
     public static final ImmutableList<Direction> POSSIBLE_FLOW_DIRECTIONS = ImmutableList.of(Direction.DOWN, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST);
-    protected final FlowingFluid fluid;
     private final List<FluidState> stateCache;
     // Forge start
     private final java.util.function.Supplier<? extends net.minecraft.world.level.material.Fluid> supplier;
@@ -43,7 +47,6 @@ public class EssenceLiquidBlock extends Block {
 
     public EssenceLiquidBlock(Supplier<? extends FlowingFluid> fluidSupplier, Properties properties) {
         super(properties);
-        this.fluid = null;
         this.stateCache = Lists.newArrayList();
         this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, Integer.valueOf(0)));
         this.supplier = fluidSupplier;
@@ -139,4 +142,18 @@ public class EssenceLiquidBlock extends Block {
         }
     }
 
+    @Override
+    public ItemStack pickupBlock(LevelAccessor level, BlockPos pos, BlockState state) {
+        if (state.getValue(LEVEL) == 0) {
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
+            return new ItemStack(((EssenceFluid)getFluid()).getFlask());
+        } else {
+            return ItemStack.EMPTY;
+        }
+    }
+
+    @Override
+    public Optional<SoundEvent> getPickupSound() {
+        return Optional.of(SoundEvents.BUCKET_FILL);
+    }
 }
