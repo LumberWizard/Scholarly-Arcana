@@ -117,7 +117,7 @@ public abstract class EssenceFluid extends FlowingFluid {
     public enum EssenceType {
         FIRE(createBasicAttributesBuilder().color(0xFFF26F18).luminosity(8).temperature(1000).translationKey(MiscUtils.createTranslationKey("block", "fire_essence")),
                 ModFluids.FIRE_ESSENCE, ModFluids.FLOWING_FIRE_ESSENCE, ModBlocks.FIRE_ESSENCE, ModItems.FIRE_FLASK),
-        AIR(createBasicAttributesBuilder().color(0xD8D9F5FF).translationKey(MiscUtils.createTranslationKey("block", "air_essence")),
+        AIR(createBasicAttributesBuilder().color(0xFFD9F5FF).translationKey(MiscUtils.createTranslationKey("block", "air_essence")),
                 ModFluids.AIR_ESSENCE, ModFluids.FLOWING_AIR_ESSENCE, ModBlocks.AIR_ESSENCE, ModItems.AIR_FLASK),
         WATER(createBasicAttributesBuilder().color(0xFF4C73CF).translationKey(MiscUtils.createTranslationKey("block", "water_essence")),
                 ModFluids.WATER_ESSENCE, ModFluids.FLOWING_WATER_ESSENCE, ModBlocks.WATER_ESSENCE, ModItems.WATER_FLASK),

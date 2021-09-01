@@ -1,8 +1,6 @@
 package lumberwizard.scholarlyarcana.world.item;
 
-import lumberwizard.scholarlyarcana.ScholarlyArcana;
 import lumberwizard.scholarlyarcana.world.level.block.FlaskPickup;
-import lumberwizard.scholarlyarcana.world.level.block.entity.ModBlockEntitiyTypes;
 import lumberwizard.scholarlyarcana.world.level.material.EssenceFluid;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -14,14 +12,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -49,7 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class EssenceFlaskItem extends Item implements ExtendedDispensibleContainerItem {
+public class EssenceFlaskItem extends Item {
 
     private final Supplier<? extends Fluid> contentFluid;
 
@@ -67,8 +62,22 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
             BlockPos clickedPos = hitResult.getBlockPos();
             Direction direction = hitResult.getDirection();
             BlockPos fillPos = clickedPos.relative(direction);
+            ItemStack singleItemCopy = stack.copy();
+            singleItemCopy.setCount(1);
             if (level.mayInteract(player, clickedPos) && player.mayUseItemAt(fillPos, direction, stack)) {
+                BlockEntity blockEntity = level.getBlockEntity(clickedPos);
                 if (this.contentFluid.get() == Fluids.EMPTY) {
+                    if (blockEntity != null && blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent()) {
+                        IFluidHandler tank = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).orElseThrow(IllegalStateException::new);
+                        IFluidHandlerItem flask = singleItemCopy.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElseThrow(() -> new IllegalStateException("Essence flask does not have fluid handler capability, report to mod author!"));
+                        int fill = flask.fill(tank.drain(flask.fill(tank.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                        ItemStack filled = flask.getContainer();
+                        if (fill != 0 && !filled.isEmpty()) {
+                            ItemStack filledResultStack = ItemUtils.createFilledResult(stack, player, filled);
+                            return InteractionResultHolder.sidedSuccess(filledResultStack, level.isClientSide());
+                        }
+                        return InteractionResultHolder.fail(stack);
+                    }
                     BlockState clickedBlock = level.getBlockState(clickedPos);
                     if (clickedBlock.getBlock() instanceof FlaskPickup flaskPickup) {
                         ItemStack filled = flaskPickup.pickupBlock(level, clickedPos, clickedBlock);
@@ -90,15 +99,26 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
 
                     return InteractionResultHolder.fail(stack);
                 } else {
+                    if (blockEntity != null && blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent()) {
+                        IFluidHandler tank = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).orElseThrow(IllegalStateException::new);
+                        IFluidHandlerItem flask = singleItemCopy.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElseThrow(() -> new IllegalStateException("Essence flask does not have fluid handler capability, report to mod author!"));
+                        int fill = tank.fill(flask.drain(tank.fill(flask.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
+                        ItemStack emptied = flask.getContainer();
+                        if (fill != 0 && !emptied.isEmpty()) {
+                            ItemStack emptiedResultStack = ItemUtils.createFilledResult(stack, player, emptied);
+                            return InteractionResultHolder.sidedSuccess(emptiedResultStack, level.isClientSide());
+                        }
+                        return InteractionResultHolder.fail(stack);
+                    }
                     BlockState state = level.getBlockState(clickedPos);
                     BlockPos placePos = canBlockContainFluid(level, clickedPos, state) ? clickedPos : fillPos;
                     if (this.emptyContents(player, level, placePos, hitResult)) {
-                        this.checkExtraContent(player, level, stack, placePos);
                         if (player instanceof ServerPlayer) {
                             CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer) player, placePos, stack);
                         }
                         player.awardStat(Stats.ITEM_USED.get(this));
-                        return InteractionResultHolder.sidedSuccess(getEmptySuccessItem(stack, player), level.isClientSide());
+                        ItemStack emptied = ItemUtils.createFilledResult(stack, player, new ItemStack(ModItems.ESSENCE_FLASK.get()));
+                        return InteractionResultHolder.sidedSuccess(emptied, level.isClientSide());
                     } else {
                         return InteractionResultHolder.fail(stack);
                     }
@@ -109,57 +129,10 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
         }
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity != null) {
-            Direction side = context.getClickedFace();
-            ItemStack stack = context.getItemInHand();
-            Player player = context.getPlayer();
-            InteractionHand hand = context.getHand();
-            IFluidHandlerItem flask = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElseThrow(() -> new IllegalStateException("Essence Flask does not have fluid handler capability"));
-            IFluidHandler tank = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).orElseThrow(() -> new IllegalStateException("Essence Tank does not have fluid handler capability on side " + side));
-            IFluidHandler source = null, target = null;
-            if (this.contentFluid.get() == Fluids.EMPTY && side.getAxis().isHorizontal()) {
-                ScholarlyArcana.LOGGER.info("Attenpting to empty tank");
-                source = tank;
-                target = flask;
-            }
-            else if (this.contentFluid.get() != Fluids.EMPTY && side.getAxis().isVertical()) {
-                ScholarlyArcana.LOGGER.info("Attempting to fill tank");
-                source = flask;
-                target = tank;
-            }
-            if (source != null && target != null) {
-                int fill = target.fill(source.drain(target.fill(source.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
-                ItemStack filled = flask.getContainer();
-                if (fill == 0 || filled.isEmpty()) {
-                    return InteractionResult.FAIL;
-                }
-                player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, filled));
-                return InteractionResult.SUCCESS;
-            }
-            else return InteractionResult.FAIL;
-        }
-        return InteractionResult.PASS;
-    }
-
     private boolean canBlockContainFluid(Level worldIn, BlockPos posIn, BlockState blockstate) {
         return blockstate.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) blockstate.getBlock()).canPlaceLiquid(worldIn, posIn, blockstate, this.contentFluid.get());
     }
 
-    public static ItemStack getEmptySuccessItem(ItemStack stack, Player player) {
-        return !player.getAbilities().instabuild ? new ItemStack(ModItems.ESSENCE_FLASK.get()) : stack;
-    }
-
-    @Override
-    public ItemStack getContainerItem() {
-        return new ItemStack(ModItems.ESSENCE_FLASK.get());
-    }
-
-    @Override
     public boolean emptyContents(@Nullable Player player, Level level, BlockPos pos, @Nullable BlockHitResult hitResult) {
         if (!(this.contentFluid.get() instanceof FlowingFluid)) {
             return false;
@@ -233,15 +206,15 @@ public class EssenceFlaskItem extends Item implements ExtendedDispensibleContain
             return FluidStack.EMPTY;
         }
 
-        public boolean canFillFluidType(FluidStack fluid) {
-            return fluid.getFluid() instanceof EssenceFluid;
-        }
-
         protected void setFluid(@Nonnull FluidStack fluidStack) {
             if (fluidStack.isEmpty() || !(fluidStack.getFluid() instanceof EssenceFluid))
                 container = new ItemStack(ModItems.ESSENCE_FLASK.get());
             else
                 container = new ItemStack(((EssenceFluid) fluidStack.getFluid()).getFlask());
+        }
+
+        public boolean canFillFluidType(FluidStack fluid) {
+            return fluid.getFluid() instanceof EssenceFluid;
         }
 
         @Nonnull
