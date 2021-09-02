@@ -67,7 +67,7 @@ public class EssenceFlaskItem extends Item {
             if (level.mayInteract(player, clickedPos) && player.mayUseItemAt(fillPos, direction, stack)) {
                 BlockEntity blockEntity = level.getBlockEntity(clickedPos);
                 if (this.contentFluid.get() == Fluids.EMPTY) {
-                    if (blockEntity != null && blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent()) {
+                    if (!player.isShiftKeyDown() && blockEntity != null && blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent()) {
                         IFluidHandler tank = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).orElseThrow(IllegalStateException::new);
                         IFluidHandlerItem flask = singleItemCopy.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElseThrow(() -> new IllegalStateException("Essence flask does not have fluid handler capability, report to mod author!"));
                         int fill = flask.fill(tank.drain(flask.fill(tank.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
@@ -99,7 +99,7 @@ public class EssenceFlaskItem extends Item {
 
                     return InteractionResultHolder.fail(stack);
                 } else {
-                    if (blockEntity != null && blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent()) {
+                    if (!player.isShiftKeyDown() && blockEntity != null && blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent()) {
                         IFluidHandler tank = blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).orElseThrow(IllegalStateException::new);
                         IFluidHandlerItem flask = singleItemCopy.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).orElseThrow(() -> new IllegalStateException("Essence flask does not have fluid handler capability, report to mod author!"));
                         int fill = tank.fill(flask.drain(tank.fill(flask.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.SIMULATE), IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);
